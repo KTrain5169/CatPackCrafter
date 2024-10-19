@@ -1,0 +1,47 @@
+name: Build Python app
+
+on:
+    push:
+      paths:
+        - 'script.py'
+    pull_request:
+      paths:
+        - 'script.py'
+    workflow_dispatch:
+
+jobs:
+    build:
+        name: Build app on ${{ matrix.os }}
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: ["windows-latest", "macos-latest", "ubuntu-latest"]
+        steps:
+            - name: Checkout ref
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 2
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: 3.11
+
+            - name: Install requirements
+              run: |
+                pip install -r requirements.txt
+
+            - name: PyInstaller
+              run: pyinstaller script.py --name CatPack_Crafter_${{ github.sha }}_${{ matrix.os }}
+
+            - name: Upload Builds
+              uses: actions/upload-artifact@v4
+              with:
+                name: ${{ matrix.os }} build
+                path: build/
+
+            - name: Upload Dists
+              uses: actions/upload-artifact@v4
+              with:
+                name: ${{ matrix.os }} dist
+                path: dist/

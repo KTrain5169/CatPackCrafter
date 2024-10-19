@@ -1,0 +1,37 @@
+name: Build docs site
+
+on:
+    push:
+        paths:
+            - "docs/**"
+            - "mkdocs.yml"
+    pull_request:
+        paths:
+            - "docs/**"
+            - "mkdocs.yml"
+    workflow_dispatch:
+
+jobs:
+    build-docs:
+        name: Build docs
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: 3.11
+
+            - name: Install dependencies
+              run: pip install -r requirements.txt
+            
+            - name: MkDocs
+              run: mkdocs build
+
+            - name: Upload build
+              uses: actions/upload-artifact@v4
+              with:
+                name: Completed mkdocs build - ${{ github.sha }}
+                path: site/
