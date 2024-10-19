@@ -17,7 +17,7 @@ This is a Python program written to help with making an advanced CatPack.
         -
         <a href="https://discord.com/channels/1031648380885147709/1278732669525561486">Community CatPack Collection (Prism Community discord)</a>
     </p>
-    <b>Support:</b>
+    <b>Need help?</b>
     <p>
         <a href="https://github.com/KTrain5169/CatPackMaker/issues">Issue tracker</a>
         -
@@ -39,5 +39,3 @@ There are 2 types of CatPacks:
 - Advanced CatPacks - these are folders with a JSON file and a bunch of images inside. The JSON dictates how the CatPack is intended to work.
 
 For more information on CatPacks, refer to the [Prism Launcher wiki](https://prismlauncher.org/wiki/getting-started/catpacks/).
-
-Documentation surrounding the project is currently work-in-progress. Check back later.

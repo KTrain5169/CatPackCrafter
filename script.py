@@ -175,7 +175,7 @@ root.title("CatPack Creator")
 root.geometry("800x600")
 
 # Folder name entry
-tk.Label(root, text="Enter Folder Name:").pack(pady=5)
+tk.Label(root, text="CatPack Name:").pack(pady=5)
 folder_name_entry = tk.Entry(root)
 folder_name_entry.pack(pady=5)
 
