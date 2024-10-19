@@ -8,6 +8,10 @@ permissions:
     pages: write
     deployments: write
 
+concurrency:
+    group: "pages"
+    cancel-in-progress: false
+
 jobs:
     build-docs:
         name: Build docs
