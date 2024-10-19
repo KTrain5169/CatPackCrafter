@@ -10,7 +10,7 @@ It's a good idea to consolidate the images you will be using in a singular folde
 
 Assuming you have already [downloaded the program](./downloads.md), run it and you'll be presented with a couple of options.
 
-- `CatPack Name`: THe name of the CatPack, both in the JSON and the folder name. Be careful - if a folder with that name already exists and has a CatPack setup in it, the new JSON file will overwrite it.
+- `CatPack Name`: The name of the CatPack, both in the JSON and the folder name. Be careful - if a folder with that name already exists and has a CatPack setup in it, the new JSON file will overwrite it.
 - `Select Output Folder`: Where the CatPack's folder will be located in.
 - `Select Default Image (Optional)`: Allows you to select an image that will be set as a "default", which means it wll show if no other image can be shown. The default image will be previewed at a smaller size beneath the options.
 - `Add Images`: Adds images to your CatPack. Each image will ask you for a Start and End date/month. Be cautious: the program does not have sanity checks for the calendar dates, so be sure not to accidentally input the 31st of Febuary (or something of that vein)!
