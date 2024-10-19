@@ -1,0 +1,7 @@
+# App
+pyinstaller==6.11.0
+pillow==11.0.0
+
+# Documentation
+mkdocs==1.6.1
+mkdocs-material==9.5.41
