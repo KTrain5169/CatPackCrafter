@@ -21,7 +21,8 @@ Assuming you have already [downloaded the program](./downloads.md), run it and y
 Once your CatPack is created, you can move the folder with all the CatPack stuff into your Prism installation's `catpacks` folder.
 This should be located at `../PrismLauncher/catpacks`, where `..` varies depending on the form of Prism you are using:
 
-???+ note "What would .. mean in my case?"
+<details>
+    <summary>"What would .. mean in my case?"</summary>
 
     If you are using a portable build of Prism, .. represents the directory where your portable build resides.
 
@@ -35,3 +36,4 @@ This should be located at `../PrismLauncher/catpacks`, where `..` varies dependi
 
     - Scoop: `%HOMEPATH%/scoop/persist` - Note that the directory may be seen as `prismlauncher` instead of `PrismLauncher`. This is as intended.
     - Flatpak: `~/.var/app/org.prismlauncher.PrismLauncher/data`
+</details
