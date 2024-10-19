@@ -8,9 +8,10 @@ from PIL import Image, ImageTk
 
 folder_name = None
 base_directory = None
-image_paths = None
+image_paths = []
 variants = []
 default_image = None
+default_image_full_path = None
 default_image_preview = None  # To store the preview image
 
 
@@ -29,15 +30,17 @@ def copy_images(image_paths, folder_name):
             shutil.copy(image, folder_name)
 
 
-def create_json(folder_path, name, variants, default_image):
+def create_json(folder_path, name, default_image, variants):
     catpack_data = {
         "name": name,
-        "variants": variants
     }
 
     # If a default image is selected, add it to the JSON
     if default_image:
         catpack_data["default"] = default_image
+    
+    if variants:
+        catpack_data["variants"] = variants
 
     # Writing the JSON file
     json_file = os.path.join(folder_path, "catpack.json")
@@ -55,7 +58,7 @@ def select_directory():
 def select_dates_for_image(image_name):
     date_window = tk.Toplevel(root)
     date_window.title(f"Select Dates for {image_name}")
-    date_window.geometry("300x300")
+    date_window.geometry("400x400")
 
     tk.Label(date_window, text=f"Select Start and End Dates for {image_name}").pack(
         pady=10)
@@ -103,14 +106,16 @@ def select_dates_for_image(image_name):
 def select_images():
     global image_paths, variants
     filetypes = [("Image files", "*.png *.jpg *.jpeg *.bmp")]
-    image_paths = filedialog.askopenfilenames(
+    new_image_paths = filedialog.askopenfilenames(
         title="Select Images", filetypes=filetypes)
 
-    if image_paths:
+    if new_image_paths:
+        # Add new images to the existing image_paths
+        image_paths.extend(list(new_image_paths))  # Ensure to convert to list
         images_button.config(text=f"Selected {len(image_paths)} images")
         variants = []
 
-        for image in image_paths:
+        for image in new_image_paths:
             image_name = os.path.basename(image)
             select_dates_for_image(image_name)
 
@@ -160,7 +165,7 @@ def on_confirm():
     if default_image_full_path:
         copy_images(default_image_full_path, new_folder_path)
 
-    create_json(new_folder_path, default_image, folder_name, variants)
+    create_json(new_folder_path, folder_name, default_image, variants)
 
     messagebox.showinfo("Success", "CatPack created successfully.")
 
@@ -185,7 +190,7 @@ default_image_button = tk.Button(
 default_image_button.pack(pady=5)
 
 # Image selection button
-images_button = tk.Button(root, text="Select Images", command=select_images)
+images_button = tk.Button(root, text="Add Images", command=select_images)
 images_button.pack(pady=5)
 
 # Default image preview label (empty initially)
