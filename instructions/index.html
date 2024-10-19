@@ -446,20 +446,22 @@
 <h2 id="using-the-catpack">Using the CatPack</h2>
 <p>Once your CatPack is created, you can move the folder with all the CatPack stuff into your Prism installation's <code>catpacks</code> folder.
 This should be located at <code>../PrismLauncher/catpacks</code>, where <code>..</code> varies depending on the form of Prism you are using:</p>
-<p>???+ note "What would .. mean in my case?"</p>
-<pre><code>If you are using a portable build of Prism, .. represents the directory where your portable build resides.
+<details>
+    <summary>"What would .. mean in my case?"</summary>
 
-If you are using a fully installed build of Prism, .. is represented differently depending on OS:
+    If you are using a portable build of Prism, .. represents the directory where your portable build resides.
 
-- Windows: `%appdata%`
-- macOS: `~/Library/Application Support`
-- Linux: `~/.local/share`
+    If you are using a fully installed build of Prism, .. is represented differently depending on OS:
 
-However, if you use either of the following package managers, they will instead be located at:
+    - Windows: `%appdata%`
+    - macOS: `~/Library/Application Support`
+    - Linux: `~/.local/share`
 
-- Scoop: `%HOMEPATH%/scoop/persist` - Note that the directory may be seen as `prismlauncher` instead of `PrismLauncher`. This is as intended.
-- Flatpak: `~/.var/app/org.prismlauncher.PrismLauncher/data`
-</code></pre>
+    However, if you use either of the following package managers, they will instead be located at:
+
+    - Scoop: `%HOMEPATH%/scoop/persist` - Note that the directory may be seen as `prismlauncher` instead of `PrismLauncher`. This is as intended.
+    - Flatpak: `~/.var/app/org.prismlauncher.PrismLauncher/data`
+</details
 
 
 
