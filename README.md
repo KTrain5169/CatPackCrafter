@@ -6,17 +6,23 @@ This is a Python program written to help with making an advanced CatPack.
     <b>Downloads:</b>
     <p>
         <a href="https://github.com/KTrain5169/CatPackMaker/releases/latest">Latest release</a>
+        -
         <a href="https://github.com/KTrain5169/CatPackMaker/releases/">All releases</a>
+        -
         <a href="https://github.com/KTrain5169/CatPackMaker/actions">⚠️Unstable builds⚠️</a>
+    </p>
     <b>Documentation:</b>
     <p>
-        <a href="https://github.com/KTrain5169/CatPackMaker/wiki">GitHub Wiki</a>
-        <a href="https://github.com/PrismLauncher/catpacks">The official PrismLauncher CatPack collection</a>
+        <a href="https://github.com/KTrain5169/CatPackMaker/wiki">Documentation site</a>
+        -
+        <a href="https://discord.com/channels/1031648380885147709/1278732669525561486">Community CatPack Collection (Prism Community discord)</a>
     </p>
     <b>Support:</b>
     <p>
         <a href="https://github.com/KTrain5169/CatPackMaker/issues">Issue tracker</a>
-        <a href="">KTrain5169's Discord server</a>
+        -
+        <a href="https://discord.gg/G6YvWhctjk">KTrain5169's Discord server</a>
+    </p>
     <b>Contribute:</b>
     <p>
         <a href="https://github.com/KTrain5169/CatPackMaker/pulls">Pull Requests</a>
