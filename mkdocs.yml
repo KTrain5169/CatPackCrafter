@@ -14,15 +14,15 @@ theme:
   palette:
   - media: "(prefers-color-scheme: light)"
     scheme: default
-    primary: purple
-    accent: indigo
+    primary: blue
+    accent: orange
     toggle:
       icon: material/weather-sunny
       name: Switch to dark mode
   - media: "(prefers-color-scheme: dark)"
     scheme: slate
-    primary: purple
-    accent: indigo
+    primary: red
+    accent: green
     toggle:
       icon: material/weather-night
       name: Switch to light mode
