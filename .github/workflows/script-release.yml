@@ -34,6 +34,7 @@ jobs:
       - name: Install requirements
         run: |
           pip install -r requirements.txt
+          pip install https://github.com/pyinstaller/pyinstaller/archive/develop.zip
 
       - name: PyInstaller
         run: pyinstaller --onefile --windowed script.py --name CatPack_Crafter_${{ github.ref_name }}_${{ matrix.os }}
