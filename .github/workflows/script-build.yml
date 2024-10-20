@@ -4,9 +4,11 @@ on:
     push:
       paths:
         - 'script.py'
+        - 'requirements.txt'
     pull_request:
       paths:
         - 'script.py'
+        - 'requirements.txt'
     workflow_dispatch:
 
 jobs:
