@@ -13,7 +13,7 @@ This is a Python program written to help with making an advanced CatPack.
     </p>
     <b>Documentation:</b>
     <p>
-        <a href="https://github.com/KTrain5169/CatPackMaker/wiki">Documentation site</a>
+        <a href="https://catpacks.ktrain5369.me">Documentation site</a>
         -
         <a href="https://discord.com/channels/1031648380885147709/1278732669525561486">Community CatPack Collection (Prism Community discord)</a>
     </p>
