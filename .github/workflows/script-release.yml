@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         runner_os: ["windows-latest", "macos-latest", "ubuntu-latest"]
-        includes:
+        include:
             - runner_os: "windows-latest"
               os: "Windows"
             - runner_os: "macos-latest"
