@@ -93,5 +93,5 @@ jobs:
           tag: ${{ github.ref_name }}
           artifacts: release-artifacts/*_dists/*
           draft: true
-          name: "CatPack_Crafter_${{ github.ref_name }}"
+          name: "CatPack Crafter ${{ github.ref_name }}"
           body: "Need help? Refer to the documentation site."
