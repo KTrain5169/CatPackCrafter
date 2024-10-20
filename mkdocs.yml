@@ -11,18 +11,18 @@ theme:
   name: material
   icon:
     repo: fontawesome/brands/github
-  palette:
+  palette: # Chosen by https://discord.com/channels/1031648380885147709/1031694870756204566/1297376138888216647
   - media: "(prefers-color-scheme: light)"
     scheme: default
-    primary: blue
-    accent: orange
+    primary: orange
+    accent: red
     toggle:
       icon: material/weather-sunny
       name: Switch to dark mode
   - media: "(prefers-color-scheme: dark)"
     scheme: slate
     primary: red
-    accent: green
+    accent: orange
     toggle:
       icon: material/weather-night
       name: Switch to light mode
