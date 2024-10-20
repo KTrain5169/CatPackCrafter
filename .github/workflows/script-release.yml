@@ -50,6 +50,13 @@ jobs:
             chmod +x dist/CatPack_Crafter_${{ github.ref_name }}_${{ matrix.os }}
             tar -czvf dist/CatPack_Crafter_${{ github.ref_name }}_${{ matrix.os }}.tar.gz dist/CatPack_Crafter_${{ github.ref_name }}_${{ matrix.os }}
             rm -rf dist/CatPack_Crafter_${{ github.ref_name }}_${{ matrix.os }}
+      
+      - name: Zip folder on Mac
+        if: ${{ matrix.runner_os == 'macos-latest' }}
+        run: |
+          zip -r CatPack_Crafter_${{ github.ref_name }}_${{ matrix.os }}.zip dist/
+          rm -rf dist/
+          mv CatPack_Crafter_${{ github.ref_name }}_${{ matrix.os }}.zip dist/
 
       - name: Upload debug builds
         uses: actions/upload-artifact@v4
