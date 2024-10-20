@@ -33,6 +33,8 @@ extra:
       link: https://github.com/KTrain5169
     - icon: fontawesome/brands/discord
       link: https://discord.gg/G6YvWhctjk
+    - icon: fontawesome/brands/bluesky
+      link: https://bsky.social/profile/ktrain5369.me
 
 nav:
   - Home: index.md
