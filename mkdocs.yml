@@ -1,13 +1,49 @@
 site_name: CatPack Crafter docs
+site_description: Documentation for the CatPack Crafter.
+site_author: KTrain5369
+copyright: Copyright 2024 by KTrain5369
+
 repo_name: GitHub source
 repo_url: https://github.com/KTrain5169/CatPackMaker
 edit_uri: blob/main/docs/
-site_description: Documentation for the CatPack Crafter.
-site_author: KTrain5369
+
 theme: 
   name: material
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: purple
+    accent: indigo
+    toggle:
+      icon: material/weather-sunny
+      name: Switch to dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: purple
+    accent: indigo
+    toggle:
+      icon: material/weather-night
+      name: Switch to light mode
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/KTrain5169
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/G6YvWhctjk
+
 nav:
   - Home: index.md
   - Download: downloads.md
   - How to use: instructions.md
   - Contributing: contributing.md
+  - Run from source: run-from-source.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+
+plugins:
+  - search

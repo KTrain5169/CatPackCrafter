@@ -36,4 +36,4 @@ This should be located at `../PrismLauncher/catpacks`, where `..` varies dependi
 
     - Scoop: `%HOMEPATH%/scoop/persist` - Note that the directory may be seen as `prismlauncher` instead of `PrismLauncher`. This is as intended.
     - Flatpak: `~/.var/app/org.prismlauncher.PrismLauncher/data`
-</details
+</details>
