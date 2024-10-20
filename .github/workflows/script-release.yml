@@ -4,8 +4,6 @@ run-name: Release ${{ github.ref_name }}
 
 on:
   push:
-    tags:
-      - "v*"
 
 permissions:
   contents: write
@@ -61,28 +59,3 @@ jobs:
         with:
           name: ${{ matrix.os }}_dists
           path: dist/*
-
-  normal_release:
-    name: Draft normal release
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: release-artifacts
-          pattern: "*_dists"
-
-      - name: List release-artifacts directory # debug
-        run: ls -R release-artifacts
-
-      - name: Draft normal release
-        uses: ncipollo/release-action@v1.14.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generateReleaseNotes: true
-          tag: ${{ github.ref_name }}
-          artifacts: 
-          draft: true
-          name: "CatPack_Crafter_${{ github.ref_name }}_*"
-          body: "Need help? Refer to the documentation site."

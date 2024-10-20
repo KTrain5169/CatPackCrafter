@@ -2,7 +2,7 @@
 pillow==11.0.0
 
 # Compiling
-pyinstaller==6.11.0
+
 
 # Documentation
 mkdocs==1.6.1
