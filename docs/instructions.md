@@ -25,15 +25,22 @@ This should be located at `../PrismLauncher/catpacks`, where `..` varies dependi
     <summary>"What would .. mean in my case?"</summary>
 
     If you are using a portable build of Prism, .. represents the directory where your portable build resides.
-
+	<br>
+	<br>
     If you are using a fully installed build of Prism, .. is represented differently depending on OS:
-
+	<br>
+	<br>
     - Windows: `%appdata%`
+	<br>
     - macOS: `~/Library/Application Support`
+	<br>
     - Linux: `~/.local/share`
-
+	<br>
+	<br>
     However, if you use either of the following package managers, they will instead be located at:
-
+	<br>
+	<br>
     - Scoop: `%HOMEPATH%/scoop/persist` - Note that the directory may be seen as `prismlauncher` instead of `PrismLauncher`. This is as intended.
-    - Flatpak: `~/.var/app/org.prismlauncher.PrismLauncher/data`
+    <br>
+	- Flatpak: `~/.var/app/org.prismlauncher.PrismLauncher/data`
 </details>
