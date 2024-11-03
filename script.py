@@ -4,15 +4,15 @@ import json
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
-
+from datetime import datetime
 
 folder_name = None
 base_directory = None
-image_paths = []
+image_paths = None
 variants = []
 default_image = None
-default_image_full_path = None
-default_image_preview = None  # To store the preview image
+default_image_preview = None
+mode = "9.0"  # Default mode is 9.0
 
 
 def create_folder(base_directory, folder_name):
@@ -30,19 +30,26 @@ def copy_images(image_paths, folder_name):
             shutil.copy(image, folder_name)
 
 
-def create_json(folder_path, name, default_image, variants):
+def create_json_84(folder_path, name, variants, default_image):
     catpack_data = {
         "name": name,
+        "variants": variants
     }
 
-    # If a default image is selected, add it to the JSON
     if default_image:
         catpack_data["default"] = default_image
-    
-    if variants:
-        catpack_data["variants"] = variants
 
-    # Writing the JSON file
+    json_file = os.path.join(folder_path, "catpack.json")
+    with open(json_file, 'w') as f:
+        json.dump(catpack_data, f, indent=4)
+
+
+def create_json_90(folder_path, name, image_dir):
+    catpack_data = {
+        "name": name,
+        "default": image_dir
+    }
+
     json_file = os.path.join(folder_path, "catpack.json")
     with open(json_file, 'w') as f:
         json.dump(catpack_data, f, indent=4)
@@ -55,82 +62,101 @@ def select_directory():
         output_dir_button.config(text=f"Output Folder: {base_directory}")
 
 
-def select_dates_for_image(image_name):
-    date_window = tk.Toplevel(root)
-    date_window.title(f"Select Dates for {image_name}")
-    date_window.geometry("400x400")
+def select_dates_for_images(callback):
+    def dates_done():
+        if len(variants) == len(image_paths):
+            callback()
 
-    tk.Label(date_window, text=f"Select Start and End Dates for {image_name}").pack(
-        pady=10)
+    for image in image_paths:
+        image_name = os.path.basename(image)
+        select_dates(image_name, dates_done)
 
-    # Select start date
-    tk.Label(date_window, text="Start Day:").pack(pady=5)
-    start_day = ttk.Combobox(date_window, values=list(
-        range(1, 32)), state="readonly")
-    start_day.pack()
 
-    tk.Label(date_window, text="Start Month:").pack(pady=5)
-    start_month = ttk.Combobox(
-        date_window, values=list(range(1, 13)), state="readonly")
-    start_month.pack()
+def select_dates(image_name, done_callback):
+    dates_window = tk.Toplevel(root)
+    dates_window.title(f"Select Dates for {image_name}")
+    dates_window.geometry("300x400")
 
-    # Select end date
-    tk.Label(date_window, text="End Day:").pack(pady=5)
-    end_day = ttk.Combobox(date_window, values=list(
-        range(1, 32)), state="readonly")
-    end_day.pack()
+    tk.Label(dates_window, text=f"Start Date for {image_name}").pack(pady=10)
+    start_day_combo = ttk.Combobox(
+        dates_window, values=[f"{i:02d}" for i in range(1, 32)])
+    start_day_combo.pack(pady=5)
 
-    tk.Label(date_window, text="End Month:").pack(pady=5)
-    end_month = ttk.Combobox(date_window, values=list(
-        range(1, 13)), state="readonly")
-    end_month.pack()
+    tk.Label(dates_window, text=f"Start Month for {image_name}").pack(pady=10)
+    start_month_combo = ttk.Combobox(
+        dates_window, values=[f"{j:02d}" for j in range(1, 13)])
+    start_month_combo.pack(pady=5)
+
+    tk.Label(dates_window, text=f"End Date for {image_name}").pack(pady=10)
+    end_day_combo = ttk.Combobox(
+        dates_window, values=[f"{i:02d}" for i in range(1, 32)])
+    end_day_combo.pack(pady=5)
+
+    tk.Label(dates_window, text=f"End Month for {image_name}").pack(pady=10)
+    end_month_combo = ttk.Combobox(
+        dates_window, values=[f"{j:02d}" for j in range(1, 13)])
+    end_month_combo.pack(pady=5)
 
     def save_dates():
-        start_day_val = int(start_day.get())
-        start_month_val = int(start_month.get())
-        end_day_val = int(end_day.get())
-        end_month_val = int(end_month.get())
+        start_day = start_day_combo.get()
+        start_month = start_month_combo.get()
+        end_day = end_day_combo.get()
+        end_month = end_month_combo.get()
 
         variant = {
-            "startTime": {"day": start_day_val, "month": start_month_val},
-            "endTime": {"day": end_day_val, "month": end_month_val},
+            "startTime": {"day": start_day, "month": start_month},
+            "endTime": {"day": end_day, "month": end_month},
             "path": image_name
         }
         variants.append(variant)
-        date_window.destroy()
+        dates_window.destroy()
+        done_callback()
 
-    confirm_button = tk.Button(date_window, text="Confirm", command=save_dates)
+    confirm_button = tk.Button(
+        dates_window, text="Confirm", command=save_dates)
     confirm_button.pack(pady=10)
 
 
+def sort_variants_by_dates(variants):
+    def date_key(variant):
+        start_date = datetime.strptime(
+            f"{variant['startTime']['day']}/{variant['startTime']['month']}",
+            "%d/%m")
+        end_date = datetime.strptime(
+            f"{variant['endTime']['day']}/{variant['endTime']['month']}",
+            "%d/%m")
+        return (start_date, end_date)
+
+    sorted_variants = sorted(variants, key=date_key)
+    return sorted_variants
+
+
 def select_images():
-    global image_paths, variants
+    global image_paths
     filetypes = [("Image files", "*.png *.jpg *.jpeg *.bmp")]
     new_image_paths = filedialog.askopenfilenames(
         title="Select Images", filetypes=filetypes)
 
     if new_image_paths:
-        # Add new images to the existing image_paths
-        image_paths.extend(list(new_image_paths))  # Ensure to convert to list
-        images_button.config(text=f"Selected {len(image_paths)} images")
-        variants = []
+        if image_paths:
+            image_paths = list(image_paths) + list(new_image_paths)
+        else:
+            image_paths = list(new_image_paths)
 
-        for image in new_image_paths:
-            image_name = os.path.basename(image)
-            select_dates_for_image(image_name)
+        images_button.config(text=f"Selected {len(image_paths)} images")
 
 
 def select_default_image():
     global default_image, default_image_full_path, default_image_preview
 
     filetypes = [("Image files", "*.png *.jpg *.jpeg *.bmp")]
-    default_image_full_path = filedialog.askopenfilename(title="Select Default Image", filetypes=filetypes)
+    default_image_full_path = filedialog.askopenfilename(
+        title="Select Default Image", filetypes=filetypes)
 
     if default_image_full_path:
         default_image = os.path.basename(default_image_full_path)
         default_image_button.config(text=f"Default Image: {default_image}")
 
-        # Load and display the image preview
         img = Image.open(default_image_full_path)
         img.thumbnail((100, 100))
         default_image_preview = ImageTk.PhotoImage(img)
@@ -139,10 +165,60 @@ def select_default_image():
         default_image_label.pack(pady=5)
 
 
-def on_confirm():
-    global folder_name
+def prompt_subfolder_name():
+    subfolder_window = tk.Toplevel(root)
+    subfolder_window.title("Set Subfolder Name")
+    subfolder_window.geometry("300x150")
 
-    # Get the folder name from the text entry
+    tk.Label(subfolder_window,
+             text="Enter the subfolder name for images:").pack(pady=10)
+    subfolder_name_entry = tk.Entry(subfolder_window)
+    subfolder_name_entry.pack(pady=5)
+
+    tk.Label(subfolder_window,
+             text="Note: Setting the name to 'random' randomizes the images."
+             ).pack(pady=10)
+
+    def confirm_subfolder_name():
+        subfolder_name = subfolder_name_entry.get()
+
+        if not subfolder_name:
+            messagebox.showerror("Error", "Please enter a subfolder name.")
+            return
+
+        subfolder_path = os.path.join(
+            base_directory, folder_name, subfolder_name)
+        os.makedirs(subfolder_path, exist_ok=True)
+
+        copy_images(image_paths, subfolder_path)
+        create_catpack(folder_name, [], default_image, subfolder_name)
+
+        subfolder_window.destroy()
+        messagebox.showinfo(
+            "Success", "9.0 catpack successfully created.")
+
+    confirm_button = tk.Button(
+        subfolder_window, text="Confirm", command=confirm_subfolder_name)
+    confirm_button.pack(pady=10)
+
+
+def create_catpack(folder_name, variants, default_image, subfolder_name=None):
+    manifest = {
+        "name": folder_name,
+        "default": subfolder_name if subfolder_name else "logos",
+    }
+
+    if variants:
+        manifest["variants"] = variants
+
+    manifest_path = os.path.join(base_directory, folder_name, "catpacks.json")
+    with open(manifest_path, 'w') as f:
+        json.dump(manifest, f, indent=4)
+
+
+def on_confirm():
+    global folder_name, default_image
+
     folder_name = folder_name_entry.get()
 
     if not folder_name:
@@ -159,46 +235,67 @@ def on_confirm():
 
     new_folder_path = create_folder(base_directory, folder_name)
 
-    if image_paths:
+    if mode == "9.0":
+        # 9.0 mode: Prompt for subfolder and create JSON in the subfolder
+        prompt_subfolder_name()
+    elif mode == "8.4":
+        # 8.4 mode: Copy images to the main folder
         copy_images(image_paths, new_folder_path)
 
-    if default_image_full_path:
-        copy_images(default_image_full_path, new_folder_path)
+        # Copy the default image if it exists
+        if default_image_full_path:
+            shutil.copy(default_image_full_path, new_folder_path)
+            default_image = os.path.basename(default_image_full_path)
 
-    create_json(new_folder_path, folder_name, default_image, variants)
+        # Select dates for images and create the JSON
+        select_dates_for_images(lambda: create_json_84(
+            new_folder_path, folder_name, sort_variants_by_dates(variants),
+            default_image))
 
-    messagebox.showinfo("Success", "CatPack created successfully.")
+
+def set_mode_90():
+    global mode
+    mode = "9.0"
+
+
+def set_mode_84():
+    global mode
+    mode = "8.4"
 
 
 root = tk.Tk()
 root.title("CatPack Creator")
 root.geometry("800x600")
 
-# Folder name entry
-tk.Label(root, text="CatPack Name:").pack(pady=5)
+tk.Label(root, text="Enter Folder Name:").pack(pady=5)
 folder_name_entry = tk.Entry(root)
 folder_name_entry.pack(pady=5)
 
-# Output directory selection button
 output_dir_button = tk.Button(
     root, text="Select Output Folder", command=select_directory)
 output_dir_button.pack(pady=5)
 
-# Default image selection button (optional)
-default_image_button = tk.Button(
-    root, text="Select Default Image (Optional)", command=select_default_image)
-default_image_button.pack(pady=5)
+tk.Label(root, text="Select Mode:").pack(pady=5)
+mode_90_button = tk.Radiobutton(
+    root, text="9.0 Mode", variable=mode, value="9.0", command=set_mode_90)
+mode_90_button.pack(pady=5)
+mode_90_button.select()
 
-# Image selection button
+mode_84_button = tk.Radiobutton(
+    root, text="8.4 Mode", variable=mode, value="8.4", command=set_mode_84)
+mode_84_button.pack(pady=5)
+
 images_button = tk.Button(root, text="Add Images", command=select_images)
 images_button.pack(pady=5)
 
-# Default image preview label (empty initially)
+default_image_button = tk.Button(
+    root, text="Select Default Image", command=select_default_image)
+default_image_button.pack(pady=5)
+
 default_image_label = tk.Label(root)
 default_image_label.pack()
 
-# Confirm button
 confirm_button = tk.Button(root, text="Confirm", command=on_confirm)
-confirm_button.pack(pady=20)
+confirm_button.pack(pady=10)
 
 root.mainloop()
