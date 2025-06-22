@@ -1,5 +1,7 @@
 # Advanced CatPack crafter
 
+<img src="./showcase.png">
+
 This is a Python program written to help with making an advanced CatPack.
 
 <div align="center">

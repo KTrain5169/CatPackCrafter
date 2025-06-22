@@ -2,17 +2,14 @@ import os
 import shutil
 import json
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
-from datetime import datetime
 
 folder_name = None
 base_directory = None
-image_paths = None
-variants = []
+image_paths = []
 default_image = None
 default_image_preview = None
-mode = "9.0"  # Default mode is 9.0
 
 
 def create_folder(base_directory, folder_name):
@@ -30,20 +27,6 @@ def copy_images(image_paths, folder_name):
             shutil.copy(image, folder_name)
 
 
-def create_json_84(folder_path, name, variants, default_image):
-    catpack_data = {
-        "name": name,
-        "variants": variants
-    }
-
-    if default_image:
-        catpack_data["default"] = default_image
-
-    json_file = os.path.join(folder_path, "catpack.json")
-    with open(json_file, 'w') as f:
-        json.dump(catpack_data, f, indent=4)
-
-
 def create_json_90(folder_path, name, image_dir):
     catpack_data = {
         "name": name,
@@ -59,76 +42,7 @@ def select_directory():
     global base_directory
     base_directory = filedialog.askdirectory(title="Select Output Directory")
     if base_directory:
-        output_dir_button.config(text=f"Output Folder: {base_directory}")
-
-
-def select_dates_for_images(callback):
-    def dates_done():
-        if len(variants) == len(image_paths):
-            callback()
-
-    for image in image_paths:
-        image_name = os.path.basename(image)
-        select_dates(image_name, dates_done)
-
-
-def select_dates(image_name, done_callback):
-    dates_window = tk.Toplevel(root)
-    dates_window.title(f"Select Dates for {image_name}")
-    dates_window.geometry("300x400")
-
-    tk.Label(dates_window, text=f"Start Date for {image_name}").pack(pady=10)
-    start_day_combo = ttk.Combobox(
-        dates_window, values=[f"{i:02d}" for i in range(1, 32)])
-    start_day_combo.pack(pady=5)
-
-    tk.Label(dates_window, text=f"Start Month for {image_name}").pack(pady=10)
-    start_month_combo = ttk.Combobox(
-        dates_window, values=[f"{j:02d}" for j in range(1, 13)])
-    start_month_combo.pack(pady=5)
-
-    tk.Label(dates_window, text=f"End Date for {image_name}").pack(pady=10)
-    end_day_combo = ttk.Combobox(
-        dates_window, values=[f"{i:02d}" for i in range(1, 32)])
-    end_day_combo.pack(pady=5)
-
-    tk.Label(dates_window, text=f"End Month for {image_name}").pack(pady=10)
-    end_month_combo = ttk.Combobox(
-        dates_window, values=[f"{j:02d}" for j in range(1, 13)])
-    end_month_combo.pack(pady=5)
-
-    def save_dates():
-        start_day = start_day_combo.get()
-        start_month = start_month_combo.get()
-        end_day = end_day_combo.get()
-        end_month = end_month_combo.get()
-
-        variant = {
-            "startTime": {"day": start_day, "month": start_month},
-            "endTime": {"day": end_day, "month": end_month},
-            "path": image_name
-        }
-        variants.append(variant)
-        dates_window.destroy()
-        done_callback()
-
-    confirm_button = tk.Button(
-        dates_window, text="Confirm", command=save_dates)
-    confirm_button.pack(pady=10)
-
-
-def sort_variants_by_dates(variants):
-    def date_key(variant):
-        start_date = datetime.strptime(
-            f"{variant['startTime']['day']}/{variant['startTime']['month']}",
-            "%d/%m")
-        end_date = datetime.strptime(
-            f"{variant['endTime']['day']}/{variant['endTime']['month']}",
-            "%d/%m")
-        return (start_date, end_date)
-
-    sorted_variants = sorted(variants, key=date_key)
-    return sorted_variants
+        output_dir_button.config(text=f"Will be placed in: {base_directory}")
 
 
 def select_images():
@@ -138,12 +52,56 @@ def select_images():
         title="Select Images", filetypes=filetypes)
 
     if new_image_paths:
-        if image_paths:
-            image_paths = list(image_paths) + list(new_image_paths)
-        else:
-            image_paths = list(new_image_paths)
+        image_paths.extend(new_image_paths)
+        images_button.config(text=f"Selected {len(image_paths)} image(s)")
+        update_image_list()
 
-        images_button.config(text=f"Selected {len(image_paths)} images")
+
+def remove_image(image_path):
+    global image_paths
+    image_paths.remove(image_path)
+    update_image_list()
+    images_button.config(text=f"Selected {len(image_paths)} image(s)")
+
+
+def view_image(image_path):
+    view_window = tk.Toplevel(root)
+    view_window.title(f"Viewing: {os.path.basename(image_path)}")
+
+    img = Image.open(image_path)
+    img.thumbnail((500, 500))  # Resize for display
+    img_preview = ImageTk.PhotoImage(img)
+
+    label = tk.Label(view_window, image=img_preview)
+    label.image = img_preview  # Keep a reference to avoid garbage collection
+    label.pack()
+
+    close_button = tk.Button(view_window, text="Close", command=view_window.destroy)
+    close_button.pack(pady=10)
+
+
+def update_image_list():
+    for widget in image_list_frame.winfo_children():
+        widget.destroy()
+
+    for image_path in image_paths:
+        frame = tk.Frame(image_list_frame)
+        frame.pack(fill="x", pady=2)
+
+        label = tk.Label(frame, text=os.path.basename(image_path), anchor="w")
+        label.pack(side="left", fill="x", expand=True)
+
+        view_button = tk.Button(
+            frame, text="View", command=lambda p=image_path: view_image(p))
+        view_button.pack(side="right", padx=5)
+
+        remove_button = tk.Button(
+            frame, text="Remove", command=lambda p=image_path: remove_image(p))
+        remove_button.pack(side="right")
+
+        # Add a separator line
+        separator = tk.Frame(image_list_frame, height=1, bg="gray")
+        separator.pack(fill="x", pady=2)
 
 
 def select_default_image():
@@ -191,7 +149,7 @@ def prompt_subfolder_name():
         os.makedirs(subfolder_path, exist_ok=True)
 
         copy_images(image_paths, subfolder_path)
-        create_catpack(folder_name, [], default_image, subfolder_name)
+        create_catpack(folder_name, subfolder_name)
 
         subfolder_window.destroy()
         messagebox.showinfo(
@@ -202,14 +160,11 @@ def prompt_subfolder_name():
     confirm_button.pack(pady=10)
 
 
-def create_catpack(folder_name, variants, default_image, subfolder_name=None):
+def create_catpack(folder_name, subfolder_name=None):
     manifest = {
         "name": folder_name,
         "default": subfolder_name if subfolder_name else "logos",
     }
-
-    if variants:
-        manifest["variants"] = variants
 
     manifest_path = os.path.join(base_directory, folder_name, "catpacks.json")
     with open(manifest_path, 'w') as f:
@@ -235,58 +190,28 @@ def on_confirm():
 
     new_folder_path = create_folder(base_directory, folder_name)
 
-    if mode == "9.0":
-        # 9.0 mode: Prompt for subfolder and create JSON in the subfolder
-        prompt_subfolder_name()
-    elif mode == "8.4":
-        # 8.4 mode: Copy images to the main folder
-        copy_images(image_paths, new_folder_path)
-
-        # Copy the default image if it exists
-        if default_image_full_path:
-            shutil.copy(default_image_full_path, new_folder_path)
-            default_image = os.path.basename(default_image_full_path)
-
-        # Select dates for images and create the JSON
-        select_dates_for_images(lambda: create_json_84(
-            new_folder_path, folder_name, sort_variants_by_dates(variants),
-            default_image))
-
-
-def set_mode_90():
-    global mode
-    mode = "9.0"
-
-
-def set_mode_84():
-    global mode
-    mode = "8.4"
+    # 9.0 mode: Prompt for subfolder and create JSON in the subfolder
+    prompt_subfolder_name()
 
 
 root = tk.Tk()
 root.title("CatPack Creator")
 root.geometry("800x600")
 
-tk.Label(root, text="Enter Folder Name:").pack(pady=5)
+tk.Label(root, text="Enter Catpack Name:").pack(pady=5)
 folder_name_entry = tk.Entry(root)
 folder_name_entry.pack(pady=5)
 
 output_dir_button = tk.Button(
-    root, text="Select Output Folder", command=select_directory)
+    root, text="Select Folder", command=select_directory)
 output_dir_button.pack(pady=5)
-
-tk.Label(root, text="Select Mode:").pack(pady=5)
-mode_90_button = tk.Radiobutton(
-    root, text="9.0 Mode", variable=mode, value="9.0", command=set_mode_90)
-mode_90_button.pack(pady=5)
-mode_90_button.select()
-
-mode_84_button = tk.Radiobutton(
-    root, text="8.4 Mode", variable=mode, value="8.4", command=set_mode_84)
-mode_84_button.pack(pady=5)
 
 images_button = tk.Button(root, text="Add Images", command=select_images)
 images_button.pack(pady=5)
+
+# New frame to display selected images
+image_list_frame = tk.Frame(root)
+image_list_frame.pack(fill="both", expand=True, pady=5)
 
 default_image_button = tk.Button(
     root, text="Select Default Image", command=select_default_image)

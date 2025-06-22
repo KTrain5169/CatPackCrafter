@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /
+
+User-agent: KTrain5169 uptime tracker
+Allow: /
+
+User-agent: Googlebot
+Allow: /
